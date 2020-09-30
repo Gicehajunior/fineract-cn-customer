@@ -145,7 +145,7 @@ public class CustomerRestController {
           produces = MediaType.APPLICATION_JSON_VALUE
   )
   private string createRegistrationNumber(@RequestParam("registrationNumber"), string registrationNumber){
-    return createRegistrationNumber;
+    return registrationNumber;
   }
 
   @Permittable(value = AcceptedTokenType.SYSTEM)
