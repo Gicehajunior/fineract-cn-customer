@@ -86,7 +86,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 @RestController
 @RequestMapping("/")
-public class CustomerRestController {
+public class partnerController {
 
   private final Logger logger;
   private final CommandGateway commandGateway;
@@ -109,43 +109,6 @@ public class CustomerRestController {
     this.fieldValueValidator = fieldValueValidator;
     this.taskService = taskService;
     this.environment = environment;
-  }
-
-  /*
-  * This function enables a user to create a name of a company.
-  * the function take following params:
-  *     -Name of the company passed from the web page view.
-  * */
-  @Permittable(value = AcceptedTokenType.TENANT, groupId = PermittableGroupIds.CUSTOMER)
-  @PostMapping(
-          value = "/companyName",
-          method = RequestMethod.POST,
-          consumes = MediaType.ALL_VALUE,
-          produces = MediaType.APPLICATION_JSON_VALUE
-  )
-  private string createCompanyName(@RequestParam("companyName") string companyName){
-    if(companyName.length() > 200){
-        return;
-    }
-    else{
-        return companyName;
-    }
-  }
-
-  /*
-  * This function enables a user to create a registration number.
-  * params passed are:
-  *     -Reg number passed from the web page view.
-  * */
-  @Permittable(value = AcceptedTokenType.TENANT, groupId = PermittableGroupIds.CUSTOMER)
-  @PostMapping(
-          value = "/registrationNumber",
-          method = RequestMethod.POST,
-          consumes = MediaType.ALL_VALUE,
-          produces = MediaType.APPLICATION_JSON_VALUE
-  )
-  private string createRegistrationNumber(@RequestParam("registrationNumber"), string registrationNumber){
-    return registrationNumber;
   }
 
   @Permittable(value = AcceptedTokenType.SYSTEM)
@@ -824,5 +787,39 @@ public class CustomerRestController {
             && !contentType.contains(MediaType.IMAGE_PNG_VALUE)) {
       throw ServiceException.badRequest("Only content type {0} and {1} allowed", MediaType.IMAGE_JPEG_VALUE, MediaType.IMAGE_PNG_VALUE);
     }
+  }
+
+  /*
+   * This function enables a user to create a name of a company.
+   * the function take following params:
+   *     -Name of the company passed from the web page view.
+   * */
+  @Permittable(value = AcceptedTokenType.TENANT, groupId = PermittableGroupIds.CUSTOMER)
+  @PostMapping(
+          value = "/customer",
+          method = RequestMethod.POST,
+          consumes = MediaType.ALL_VALUE,
+          produces = MediaType.APPLICATION_JSON_VALUE
+  )
+  private string createCompanyName(@ResponseBody companyName companyname){
+    this.commandGateway.process(new CreateTaskDefinitionCommand(companyname));
+    return ResponseEntity.accepted().build();
+  }
+
+  /*
+   * This function enables a user to create a registration number.
+   * params passed are:
+   *     -Reg number passed from the web page view.
+   * */
+  @Permittable(value = AcceptedTokenType.TENANT, groupId = PermittableGroupIds.CUSTOMER)
+  @PostMapping(
+          value = "/customer",
+          method = RequestMethod.POST,
+          consumes = MediaType.ALL_VALUE,
+          produces = MediaType.APPLICATION_JSON_VALUE
+  )
+  private string createRegistrationNumber(@RequestBody companyRegistrationNumber companyregistrationnumber){
+    this.commandGateway.process(new CreateTaskDefinitionCommand(companyregistrationnumber));
+    return ResponseEntity.accepted().build();
   }
 }
